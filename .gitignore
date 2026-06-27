@@ -1,0 +1,13 @@
+# Ignore the virtual environment
+.venv/
+venv/
+ENV/
+
+# Ignore local environment/secret files
+.env
+.env.local
+
+# Ignore temporary audio files or python cache
+__pycache__/
+*.mp3
+
