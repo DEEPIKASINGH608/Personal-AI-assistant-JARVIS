@@ -1,13 +1,22 @@
-# Ignore the virtual environment
+# Credentials / Secrets
+.env
+
+# Environments
 .venv/
 venv/
 ENV/
 
-# Ignore local environment/secret files
-.env
-.env.local
-
-# Ignore temporary audio files or python cache
+# Python caching
 __pycache__/
-*.mp3
+*.py[cod]
+*$py.class
+
+# PyInstaller build outputs
+build/
+dist/
+*.spec
+
+# IDEs and editors
+.vscode/
+.idea/
 
