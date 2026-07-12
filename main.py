@@ -1,4 +1,5 @@
 import os
+import sys
 from openai import OpenAI
 import speech_recognition as sr
 import webbrowser
@@ -8,6 +9,17 @@ import requests
 from gtts import gTTS
 import pygame
 import time
+from dotenv import load_dotenv
+
+if getattr(sys, 'frozen', False):
+    application_path = os.path.dirname(sys.executable)
+else:
+    application_path = os.path.dirname(os.path.abspath(__file__))
+
+dotenv_path = os.path.join(application_path, '.env')
+load_dotenv(dotenv_path)
+
+REAL_OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 recognizer = sr.Recognizer()
 engine = pyttsx3.init()
@@ -28,11 +40,10 @@ def speak(text):
         pygame.time.Clock().tick(10)
 
     pygame.mixer.music.unload()
-    time.sleep(0.1)  # Gives Windows a moment to release the file handle
+    time.sleep(0.1)
     os.remove("temp.mp3")
 
 def aiProcess(command):
-    # Fixed: Assigned api_key properly and fixed the model name to 'gpt-4o-mini'
     client = OpenAI(api_key="OPENAI_API_KEY")
 
     completion = client.chat.completions.create(
@@ -76,7 +87,6 @@ def processCommand(c):
 if __name__ == "__main__":
     speak("Initializing Jarvis.....")
 
-    # Keep one global recognizer instead of making a new object every second
     r = sr.Recognizer()
 
 while True:
@@ -90,17 +100,13 @@ while True:
             word = r.recognize_google(audio).lower()
             print(f"Heard: '{word}'")
 
-            # Check if the wake word is present anywhere in what you said
             if "jarvis" in word:
 
-                # CASE 1: You said something else along with 'Jarvis' (e.g., "Jarvis open youtube")
                 if len(word.strip()) > 6:
-                    # Strip out the word 'jarvis' to isolate the command
                     command = word.replace("jarvis", "").strip()
                     print(f"Extracted Command: {command}")
                     processCommand(command)
 
-                # CASE 2: You ONLY said "Jarvis", so it should ask what you want
                 else:
                     speak("Yes, how can I help you?")
                     with sr.Microphone() as source:
@@ -122,3 +128,4 @@ while True:
             pass
         except Exception as e:
             print(f"Error: {e}")
+
